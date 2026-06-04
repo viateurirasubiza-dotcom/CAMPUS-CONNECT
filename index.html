@@ -12,17 +12,51 @@
   <h2 style="color:#3b82f6;">CampusConnect</h2>
   <p>Login to continue</p>
 
-  <input placeholder="Email">
-  <input type="password" placeholder="Password">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
 
   <button onclick="login()">Login</button>
 </div>
 
 </div>
 
-<script>
-function login(){
-  window.location.href="dashboard.html";
+<script type="module">
+
+import { auth } from "./firebase.js";
+import {
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+/* 🔐 AUTO REDIRECT IF LOGGED IN */
+onAuthStateChanged(auth,(user)=>{
+  if(user){
+    window.location.href="dashboard.html";
+  }
+});
+
+/* 🔥 REAL LOGIN */
+window.login = function(){
+
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  if(email.trim()=="" || password.trim()==""){
+    alert("Fill all fields");
+    return;
+  }
+
+  signInWithEmailAndPassword(auth,email,password)
+  .then(()=>{
+    window.location.href="dashboard.html";
+  })
+  .catch(err=>{
+    alert("Login failed: " + err.message);
+  });
+
 }
 </script>
 
