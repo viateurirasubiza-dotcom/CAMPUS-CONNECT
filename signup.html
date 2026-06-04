@@ -1,48 +1,143 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Signup</title>
+<title>Create Account - CampusConnect</title>
 <link rel="stylesheet" href="style.css">
-</head>
 
+<style>
+body{
+  margin:0;
+  background:#0b1220;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.container{
+  width:380px;
+  background:#0f172a;
+  padding:25px;
+  border-radius:16px;
+  border:1px solid #1f2937;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+
+h2{
+  text-align:center;
+  color:#3b82f6;
+  margin-bottom:15px;
+}
+
+p{
+  text-align:center;
+  color:#94a3b8;
+}
+
+a{
+  color:#3b82f6;
+  text-decoration:none;
+}
+</style>
+
+</head>
 <body>
 
-<div class="main" style="display:flex;justify-content:center;align-items:center;height:100vh;">
+<div class="container">
 
-<div class="card" style="width:350px;">
-  <h2>Sign Up 🚀</h2>
+<h2>Create Account 🚀</h2>
 
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+<input id="email"
+       type="email"
+       placeholder="Email">
 
-  <button onclick="signup()">Create Account</button>
+<input id="password"
+       type="password"
+       placeholder="Password">
 
-  <p><a href="index.html">Already have account?</a></p>
-</div>
+<input id="confirmPassword"
+       type="password"
+       placeholder="Confirm Password">
+
+<button onclick="signup()">
+Create Account
+</button>
+
+<p>
+Already have an account?
+<a href="index.html">Login</a>
+</p>
 
 </div>
 
 <script type="module">
 
 import { auth } from "./firebase.js";
+
 import {
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-window.signup = function(){
-
-  let email = document.getElementById("email").value;
-  let password = document.getElementById("password").value;
-
-  createUserWithEmailAndPassword(auth,email,password)
-  .then(()=>{
+/* AUTO REDIRECT */
+onAuthStateChanged(auth,(user)=>{
+  if(user){
     window.location.href="dashboard.html";
-  })
-  .catch(err=>{
-    alert(err.message);
-  });
+  }
+});
+
+window.signup = async function(){
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const confirmPassword =
+    document.getElementById("confirmPassword").value;
+
+  if(!email || !password){
+    alert("Fill all fields");
+    return;
+  }
+
+  if(password.length < 6){
+    alert("Password must be at least 6 characters");
+    return;
+  }
+
+  if(password !== confirmPassword){
+    alert("Passwords do not match");
+    return;
+  }
+
+  try{
+
+    await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    alert("Account created successfully!");
+
+    window.location.href="dashboard.html";
+
+  }catch(err){
+
+    if(err.code === "auth/email-already-in-use"){
+      alert("Email already exists");
+    }else{
+      alert(err.message);
+    }
+
+    console.error(err);
+
+  }
 
 }
+
 </script>
 
 </body>
