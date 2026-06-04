@@ -8,35 +8,47 @@
 
 <div class="sidebar">
   <h2>Chat</h2>
-  <a href="dashboard.html">🏠 Home</a>
-  <a href="chat.html">💬 Chat</a>
+  <a href="dashboard.html">Home</a>
 </div>
 
 <div class="main">
 
-<div class="topbar">
+<div class="card">
   <h3>Campus Chat 💬</h3>
+
+  <div class="chat-box" id="chatBox"></div>
+
+  <input id="msg" placeholder="Type message">
+  <button onclick="sendMsg()">Send</button>
 </div>
 
-<div class="chat-box" id="chatBox"></div>
-
-<input id="msg" placeholder="Type message">
-<button onclick="send()">Send</button>
-
 </div>
 
-<script>
-function send(){
-  let msg = document.getElementById("msg").value;
-  if(msg=="") return;
+<script type="module">
+import { db } from "./firebase.js";
+import {
+  collection, addDoc, onSnapshot, orderBy, query
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  let box = document.getElementById("chatBox");
+const q = query(collection(db,"messages"), orderBy("time"));
 
-  let div = document.createElement("div");
-  div.className="msg";
-  div.innerText = msg;
+onSnapshot(q,(snap)=>{
+  document.getElementById("chatBox").innerHTML="";
+  snap.forEach(doc=>{
+    let div=document.createElement("div");
+    div.className="msg";
+    div.innerText=doc.data().text;
+    document.getElementById("chatBox").appendChild(div);
+  });
+});
 
-  box.appendChild(div);
+window.sendMsg = async function(){
+  let msg=document.getElementById("msg").value;
+
+  await addDoc(collection(db,"messages"),{
+    text:msg,
+    time:Date.now()
+  });
 
   document.getElementById("msg").value="";
 }
