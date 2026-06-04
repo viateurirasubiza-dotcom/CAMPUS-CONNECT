@@ -7,7 +7,7 @@
 <body>
 
 <div class="sidebar">
-  <h2>Groups</h2>
+  <h2>Groups 👥</h2>
   <a href="dashboard.html">🏠 Home</a>
   <a href="groups.html">👥 Groups</a>
 </div>
@@ -19,12 +19,26 @@
 </div>
 
 <div class="card">
-  <button>Senior 4 ICT</button>
-  <button>Senior 5 MPC</button>
-  <button>Senior 6 MCE</button>
+  <h3>Select a Group</h3>
+
+  <button onclick="openGroup('group_s4')">📘 Senior 4 ICT</button>
+  <button onclick="openGroup('group_s5')">📗 Senior 5 MPC</button>
+  <button onclick="openGroup('group_s6')">📕 Senior 6 MCE</button>
 </div>
 
 </div>
+
+<script>
+/* 🔥 OPEN GROUP SYSTEM */
+function openGroup(groupId){
+
+  // save selected group
+  localStorage.setItem("chatId", groupId);
+
+  // go to chat page
+  window.location.href = "chat.html";
+}
+</script>
 
 </body>
 </html>
