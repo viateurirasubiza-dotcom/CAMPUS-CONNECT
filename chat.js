@@ -56,18 +56,30 @@ function loadMessages(){
 /* 📤 SEND MESSAGE */
 window.sendMsg = async function(){
 
-  let msg = document.getElementById("msg").value;
+  let input = document.getElementById("msg");
+  let msg = input.value;
 
-  if(msg.trim() === "") return;
+  if(msg.trim() === ""){
+    return;
+  }
 
-  if(!currentUser) return;
+  if(!currentUser){
+    alert("Not logged in");
+    return;
+  }
 
-  await addDoc(collection(db,"messages"),{
-    text: msg,
-    sender: currentUser.email,
-    chatId: chatId,
-    time: Date.now()
-  });
+  try{
+    await addDoc(collection(db,"messages"),{
+      text: msg,
+      sender: currentUser.email,
+      chatId: chatId,
+      time: Date.now()
+    });
 
-  document.getElementById("msg").value="";
+    input.value = "";
+
+  }catch(err){
+    console.error(err);
+    alert("Message failed ❌");
+  }
 }
