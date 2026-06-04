@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Signup</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="main" style="display:flex;justify-content:center;align-items:center;height:100vh;">
+
+<div class="card" style="width:350px;">
+  <h2>Sign Up 🚀</h2>
+
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="signup()">Create Account</button>
+
+  <p><a href="index.html">Already have account?</a></p>
+</div>
+
+</div>
+
+<script type="module">
+
+import { auth } from "./firebase.js";
+import {
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+window.signup = function(){
+
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  createUserWithEmailAndPassword(auth,email,password)
+  .then(()=>{
+    window.location.href="dashboard.html";
+  })
+  .catch(err=>{
+    alert(err.message);
+  });
+
+}
+</script>
+
+</body>
+</html>
