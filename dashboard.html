@@ -8,21 +8,25 @@
 
 <div class="sidebar">
   <h2>CampusConnect</h2>
+
   <a href="dashboard.html">🏠 Dashboard</a>
   <a href="chat.html">💬 Chat</a>
   <a href="groups.html">👥 Groups</a>
   <a href="announcements.html">📢 Announcements</a>
+
+  <button onclick="logout()">🚪 Logout</button>
 </div>
 
 <div class="main">
 
 <div class="topbar">
-  <h3>Welcome to SaaS Dashboard 👋</h3>
+  <h3 id="welcome">Loading...</h3>
 </div>
 
 <div class="card">
   <h3>Quick Actions</h3>
   <button onclick="go('chat.html')">Open Chat</button>
+  <button onclick="go('groups.html')">Open Groups</button>
 </div>
 
 <div class="card">
@@ -32,10 +36,36 @@
 
 </div>
 
-<script>
-function go(page){
+<script type="module">
+
+import { auth } from "./firebase.js";
+import {
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+/* 🔐 PROTECTION (NO LOGIN = NO ACCESS) */
+onAuthStateChanged(auth,(user)=>{
+  if(!user){
+    window.location.href="index.html";
+  }else{
+    document.getElementById("welcome").innerText =
+      "Welcome " + user.email + " 👋";
+  }
+});
+
+/* 🚪 LOGOUT */
+window.logout = function(){
+  signOut(auth).then(()=>{
+    window.location.href="index.html";
+  });
+}
+
+/* NAVIGATION */
+window.go = function(page){
   window.location.href = page;
 }
+
 </script>
 
 </body>
